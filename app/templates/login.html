@@ -2,12 +2,31 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script type="text/javascript">
+function set_openid(openid, pr)
+{
+	u = openid.search('<username>')
+	if (u !=-1){
+		//opemid requires username
+		user = prompt('Enter your '+ pr + 'usernam:')
+		openid = openid.substr(0, u) + user
+	}
+	form = documnet.forms['login'];
+	form.elements['openid'].values = openid
+}
+</script>
 <h1>Sign in</h1>
 <form action="" method="post" name="logina">
 	{{form.hidden_tag()}}
 	<p>
-	     Please enter you OpenID:<br>
-	     {{form.openid(size=80)}}<br>
+	     Please enter you OpenID: or select one of the providers below:<br>
+	     {{form.openid(size=80)}}
+	     {% for error in  form.openid.errors %}
+	         <span style="color:red;">[{{error}}]</span>
+	     {% endfor %}<br>
+	     |{% for pr in providers %}
+	         <a href="javascript:set_openid('{{pr.url}}','{{pr.name}}');">{{ pr.name}}</a>|
+	     {% endfor %}
 	</p>
 	<p>{{form.remember_me}} Remember Me</p>
 	<p><input type="submit" value="Sign In"></p>
