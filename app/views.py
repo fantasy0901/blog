@@ -18,6 +18,11 @@ def login():
 		session['remember_me'] = form.remember_me.data
 		return oid.try_login(form.openid.data, ask_for=['nickname','email'])
 	return render_template('login.html',title='Sign In',form=form,providers = app.config['OPENID_PROVIDERS'])
+
+@app.route('/logout')
+def logout():
+	logout_user()
+	return redirect(url_for('index'))
 	
 @app.route('/')
 @app.route('/index')
