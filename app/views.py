@@ -1,11 +1,15 @@
-from app import app, db, lm, oid
+import app import app, db, lm, oid
 from flask import render_template,flash,redirect,session, url_for, request, g
 from .forms import LoginForm
 from .models import User
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
+@lm.user_loader
+def load_user(id):
+	return User.query.get(int(id))
+
 @app.before_request
-def before_request()
+def before_request():
 	g.user = current_user
 
 @app.route('/login',methods = ['GET','POST'])
@@ -60,9 +64,4 @@ def after_login(resp):
 		remember_me = session['remember_Me']
 		session.pop('remember_me', None)
 	login_user(user, remember=remember_me)
-	return redirect(request.args.get('next') or url_for('index')
-
-@lm.user_loader
-def loader_user(id):
-	return User.query.get(int(id))
-
+	return redirect(request.args.get('next') or url_for('index'))
